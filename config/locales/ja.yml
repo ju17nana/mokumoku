@@ -1,4 +1,8 @@
 ja:
+  activerecord:
+    attributes:
+      event:
+        only_woman: 女性限定
   enums:
     notification_timing:
       timing:
