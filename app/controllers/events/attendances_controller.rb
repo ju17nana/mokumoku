@@ -3,13 +3,7 @@
 class Events::AttendancesController < ApplicationController
   def create
     @event = Event.find(params[:event_id])
-    if !@event.only_woman?
-      event_attendance = current_user.attend(@event)
-      (@event.attendees - [current_user] + [@event.user]).uniq.each do |user|
-        NotificationFacade.attended_to_event(event_attendance, user)
-      end
-      redirect_back(fallback_location: root_path, success: '参加の申込をしました')
-    else
+    if @event.only_woman?
       if current_user.woman?
         event_attendance = current_user.attend(@event)
         (@event.attendees - [current_user] + [@event.user]).uniq.each do |user|
@@ -17,8 +11,14 @@ class Events::AttendancesController < ApplicationController
         end
         redirect_back(fallback_location: root_path, success: '参加の申込をしました')
       else
-        render template: "events/show"
+        render template: 'events/show'
       end
+    else
+      event_attendance = current_user.attend(@event)
+      (@event.attendees - [current_user] + [@event.user]).uniq.each do |user|
+        NotificationFacade.attended_to_event(event_attendance, user)
+      end
+      redirect_back(fallback_location: root_path, success: '参加の申込をしました')
     end
   end
 
