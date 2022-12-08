@@ -44,6 +44,11 @@
           イベントの説明
         </div>
         <div class="card-body">
+          <% if @event.only_woman? %>
+            <div class="fs-3 text-danger mb-3">
+              <%= Event.human_attribute_name(:only_woman) %>
+            </div>
+          <% end %>
           <%= simple_format @event.content %>
         </div>
       </div>

@@ -7,7 +7,14 @@
       <h4 class="card-title fw-bold">
         <%= link_to event.title, event_path(event)  %>
       </h4>
-      <p class="card-text"><%= event.content %></p>
+      <p class="card-text">
+        <% if event.only_woman? %>
+          <div class="text-danger mb-1">
+            <%= Event.human_attribute_name(:only_woman) %>
+          </div>
+        <% end %>
+        <%= event.content %>
+      </p>
       <hr />
       <div class="d-flex justify-content-between">
         <div>
