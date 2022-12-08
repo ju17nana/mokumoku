@@ -3,11 +3,23 @@
 class Events::AttendancesController < ApplicationController
   def create
     @event = Event.find(params[:event_id])
-    event_attendance = current_user.attend(@event)
-    (@event.attendees - [current_user] + [@event.user]).uniq.each do |user|
-      NotificationFacade.attended_to_event(event_attendance, user)
+    if !@event.only_woman?
+      event_attendance = current_user.attend(@event)
+      (@event.attendees - [current_user] + [@event.user]).uniq.each do |user|
+        NotificationFacade.attended_to_event(event_attendance, user)
+      end
+      redirect_back(fallback_location: root_path, success: '参加の申込をしました')
+    else
+      if current_user.woman?
+        event_attendance = current_user.attend(@event)
+        (@event.attendees - [current_user] + [@event.user]).uniq.each do |user|
+          NotificationFacade.attended_to_event(event_attendance, user)
+        end
+        redirect_back(fallback_location: root_path, success: '参加の申込をしました')
+      else
+        render template: "events/show"
+      end
     end
-    redirect_back(fallback_location: root_path, success: '参加の申込をしました')
   end
 
   def destroy
