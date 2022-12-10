@@ -44,6 +44,11 @@
           イベントの説明
         </div>
         <div class="card-body">
+          <% if @event.only_woman? %>
+            <div class="fs-3 text-danger mb-3">
+              <%= Event.human_attribute_name(:only_woman) %>
+            </div>
+          <% end %>
           <%= simple_format @event.content %>
         </div>
       </div>
@@ -82,27 +87,53 @@
             <%= l @event.held_at, format: :short %>
           </h4>
           <hr />
-          <div class="text-center">
-            <% if logged_in? %>
-              <% if !current_user.owner?(@event) %>
-                <% if current_user.attend?(@event) %>
-                  <%= link_to 'キャンセルする',
-                              event_attendance_url(@event),
-                              class: 'btn btn-primary',
-                              method: :delete,
-                              data: { confirm: 'キャンセルします' }
-                  %>
-                <% else %>
-                  <%= link_to 'このもくもく会に参加する',
-                              event_attendance_url(@event),
-                              class: 'btn btn-primary',
-                              method: :post,
-                              data: { confirm: '申し込みます' }
-                  %>
+          <% if !@event.only_woman? %>
+            <div class="text-center">
+              <% if logged_in? %>
+                <% if !current_user.owner?(@event) %>
+                  <% if current_user.attend?(@event) %>
+                    <%= link_to 'キャンセルする',
+                                event_attendance_url(@event),
+                                class: 'btn btn-primary',
+                                method: :delete,
+                                data: { confirm: 'キャンセルします' }
+                    %>
+                  <% else %>
+                    <%= link_to 'このもくもく会に参加する',
+                                event_attendance_url(@event),
+                                class: 'btn btn-primary',
+                                method: :post,
+                                data: { confirm: '申し込みます' }
+                    %>
+                  <% end %>
                 <% end %>
               <% end %>
+            </div>
+          <% else %>
+            <% if current_user.woman? %>
+              <div class="text-center">
+                <% if logged_in? %>
+                  <% if !current_user.owner?(@event) %>
+                    <% if current_user.attend?(@event) %>
+                      <%= link_to 'キャンセルする',
+                                  event_attendance_url(@event),
+                                  class: 'btn btn-primary',
+                                  method: :delete,
+                                  data: { confirm: 'キャンセルします' }
+                      %>
+                    <% else %>
+                      <%= link_to 'このもくもく会に参加する',
+                                  event_attendance_url(@event),
+                                  class: 'btn btn-primary',
+                                  method: :post,
+                                  data: { confirm: '申し込みます' }
+                      %>
+                    <% end %>
+                  <% end %>
+                <% end %>
+              </div>
             <% end %>
-          </div>
+          <% end %>
         </div>
       </div>
       <div class="card mb-3">
